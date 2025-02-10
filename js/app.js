@@ -11679,7 +11679,7 @@
         }, react.createElement("div", {
             className: "header__logo"
         }, react.createElement("img", {
-            src: "img/header/logo.png"
+            src: "img/header/logo.webp"
         }), react.createElement("div", {
             className: "header__info"
         }, react.createElement("h3", {
@@ -11766,7 +11766,7 @@
         }, react.createElement("h2", null, "Корзина"), react.createElement("img", {
             onClick: onClickClose,
             className: "drawer__button",
-            src: "/img/btn.svg",
+            src: "img/btn.svg",
             alt: "button"
         })), items.length > 0 ? react.createElement(react.Fragment, null, react.createElement("div", {
             className: "drawer__body"
@@ -11788,7 +11788,7 @@
         }, obj.price, " руб.")), react.createElement("img", {
             onClick: () => onRemove(obj.id),
             className: "drawer__button",
-            src: "/img/btn.svg",
+            src: "img/btn.svg",
             alt: "button"
         }))))), react.createElement("ul", {
             className: "drawer__count count-drawer"
