@@ -9903,19 +9903,30 @@
         return Action2;
     })(Action || {});
     var PopStateEventType = "popstate";
-    function createBrowserHistory(options = {}) {
-        function createBrowserLocation(window2, globalHistory) {
-            let {pathname, search, hash} = window2.location;
+    function createHashHistory(options = {}) {
+        function createHashLocation(window2, globalHistory) {
+            let {pathname = "/", search = "", hash = ""} = parsePath(window2.location.hash.substring(1));
+            if (!pathname.startsWith("/") && !pathname.startsWith(".")) pathname = "/" + pathname;
             return createLocation("", {
                 pathname,
                 search,
                 hash
             }, globalHistory.state && globalHistory.state.usr || null, globalHistory.state && globalHistory.state.key || "default");
         }
-        function createBrowserHref(window2, to) {
-            return typeof to === "string" ? to : createPath(to);
+        function createHashHref(window2, to) {
+            let base = window2.document.querySelector("base");
+            let href = "";
+            if (base && base.getAttribute("href")) {
+                let url = window2.location.href;
+                let hashIndex = url.indexOf("#");
+                href = hashIndex === -1 ? url : url.slice(0, hashIndex);
+            }
+            return href + "#" + (typeof to === "string" ? to : createPath(to));
         }
-        return getUrlBasedHistory(createBrowserLocation, createBrowserHref, null, options);
+        function validateHashLocation(location, to) {
+            warning(location.pathname.charAt(0) === "/", `relative pathnames are not supported in hash history.push(${JSON.stringify(to)})`);
+        }
+        return getUrlBasedHistory(createHashLocation, createHashHref, validateHashLocation, options);
     }
     function invariant(value, message) {
         if (value === false || value === null || typeof value === "undefined") throw new Error(message);
@@ -11255,9 +11266,9 @@
     try {
         if (isBrowser) window.__reactRouterVersion = "7.1.5";
     } catch (e) {}
-    function BrowserRouter({basename, children, window: window2}) {
+    function HashRouter({basename, children, window: window2}) {
         let historyRef = react.useRef();
-        if (historyRef.current == null) historyRef.current = createBrowserHistory({
+        if (historyRef.current == null) historyRef.current = createHashHistory({
             window: window2,
             v5Compat: true
         });
@@ -11664,7 +11675,7 @@
         }, react.createElement("div", {
             className: "header__container"
         }, react.createElement(Link, {
-            to: ""
+            to: "/"
         }, react.createElement("div", {
             className: "header__logo"
         }, react.createElement("img", {
@@ -11683,7 +11694,7 @@
         }, react.createElement("img", {
             src: "img/header/card.svg"
         }), react.createElement("span", null, totalPrice, " руб.")), react.createElement(Link, {
-            to: "favourites"
+            to: "/favourites"
         }, react.createElement("li", {
             className: "header__item"
         }, react.createElement("span", {
@@ -11691,7 +11702,7 @@
         }, "Закладки"), react.createElement("img", {
             src: "img/header/like.svg"
         }))), react.createElement(Link, {
-            to: "orders"
+            to: "/orders"
         }, react.createElement("li", {
             className: "header__item"
         }, react.createElement("span", null, "Профиль"), react.createElement("img", {
@@ -12242,7 +12253,7 @@ and limitations under the License.
         }), react.createElement(components_Header, {
             onClickCart: () => setCartOpened(true)
         }), react.createElement(Routes, null, react.createElement(Route, {
-            path: "",
+            path: "/",
             element: react.createElement(components_Home, {
                 items,
                 cartItems,
@@ -12255,17 +12266,17 @@ and limitations under the License.
             }),
             exact: true
         }), react.createElement(Route, {
-            path: "favourites",
+            path: "/favourites",
             element: react.createElement(components_Favourites, null),
             exact: true
         }), react.createElement(Route, {
-            path: "orders",
+            path: "/orders",
             element: react.createElement(components_Orders, null),
             exact: true
         }))));
     }
     const root = document.querySelector("#root") ? document.querySelector("#root") : document.querySelector(".wrapper");
-    client.createRoot(root).render(react.createElement(react.StrictMode, null, react.createElement(BrowserRouter, null, react.createElement(App, null))));
+    client.createRoot(root).render(react.createElement(react.StrictMode, null, react.createElement(HashRouter, null, react.createElement(App, null))));
     let addWindowScrollEvent = false;
     setTimeout((() => {
         if (addWindowScrollEvent) {
