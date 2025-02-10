@@ -12048,7 +12048,7 @@ and limitations under the License.
             className: "card__pluse",
             onClick: onClickPlus
         }, react.createElement("img", {
-            src: isAdded ? "./../img/card/pluse-02.svg" : "img/card/pluse-01.svg",
+            src: isAdded ? "img/card/pluse-02.svg" : "img/card/pluse-01.svg",
             alt: "",
             className: "card__pluse-img"
         })))));
